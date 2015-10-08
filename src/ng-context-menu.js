@@ -25,10 +25,11 @@
             'callback': '&contextMenu',
             'disabled': '&contextMenuDisabled',
             'closeCallback': '&contextMenuClose',
-            'marginBottom': '@contextMenuMarginBottom'
+            'marginBottom': '@contextMenuMarginBottom',
+            'opened': '=contextMenuOpened'
           },
           link: function($scope, $element, $attrs) {
-            var opened = false;
+            $scope.opened = false;
 
             function open(event, menuElement) {
               menuElement.addClass('open');
@@ -58,17 +59,17 @@
 
               menuElement.css('top', top + 'px');
               menuElement.css('left', left + 'px');
-              opened = true;
+              $scope.opened = true;
             }
 
             function close(menuElement) {
               menuElement.removeClass('open');
 
-              if (opened) {
+              if ($scope.opened) {
                 $scope.closeCallback();
               }
 
-              opened = false;
+              $scope.opened = false;
             }
 
             $element.bind('contextmenu', function(event) {
@@ -95,7 +96,7 @@
 
             function handleKeyUpEvent(event) {
               //console.log('keyup');
-              if (!$scope.disabled() && opened && event.keyCode === 27) {
+              if (!$scope.disabled() && $scope.opened && event.keyCode === 27) {
                 $scope.$apply(function() {
                   close(ContextMenuService.menuElement);
                 });
@@ -104,7 +105,7 @@
 
             function handleClickEvent(event) {
               if (!$scope.disabled() &&
-                opened &&
+                $scope.opened &&
                 (event.button !== 2 ||
                   event.target !== ContextMenuService.element)) {
                 $scope.$apply(function() {
